@@ -1,0 +1,7 @@
+**/.git
+**/.gitignore
+**/bin
+**/obj
+**/*.db
+**/node_modules
+src/SistemaRetiradaNotebooks.Web

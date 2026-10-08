@@ -1,0 +1,6 @@
+@SistemaRetiradaNotebooks.Api_HostAddress = http://localhost:5172
+
+GET {{SistemaRetiradaNotebooks.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

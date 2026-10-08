@@ -1,0 +1,129 @@
+<div class="page-header">
+  <h1>{{ isAdmin ? 'Todas as Solicitações' : 'Minhas Solicitações' }}</h1>
+  @if (!isAdmin) {
+    <a class="btn btn-primary" routerLink="/notebooks">+ Nova Solicitação</a>
+  }
+</div>
+
+<!-- Painel de aprovação com seleção de notebooks -->
+@if (isAdmin && aprovandoId !== null) {
+  <div class="card form-section aprovacao-panel">
+    <h3>Aprovar Solicitação #{{ aprovandoId }}</h3>
+    <p class="form-hint">
+      Solicitação de <strong>{{ solicitacaoAtual?.quantidade }}</strong> notebook(s).
+      Selecione exatamente {{ solicitacaoAtual?.quantidade }} notebook(s) disponível(is):
+      <span class="badge badge-blue" style="margin-left: 8px">{{ notebooksSelecionados.size }} selecionado(s)</span>
+    </p>
+
+    @if (erroAprovacao) {
+      <div class="alert alert-error">{{ erroAprovacao }}</div>
+    }
+
+    @for (carrinho of carrinhos; track carrinho.id) {
+      @if (notebooksDisponiveis(carrinho).length > 0) {
+        <div class="carrinho-aprovacao">
+          <h4>{{ carrinho.nome }}</h4>
+          <div class="notebooks-check-list">
+            @for (n of notebooksDisponiveis(carrinho); track n.id) {
+              <label class="notebook-check-item" [class.selecionado]="notebooksSelecionados.has(n.id)">
+                <input type="checkbox" [checked]="notebooksSelecionados.has(n.id)" (change)="toggleNotebook(n.id)">
+                <span>
+                  <strong>Nº {{ n.numero }}</strong> —
+                  {{ n.modelo }} |
+                  Pat: {{ n.patrimonio || '—' }} |
+                  Série: {{ n.numeroSerie || '—' }}
+                </span>
+              </label>
+            }
+          </div>
+        </div>
+      }
+    }
+
+    <div class="form-actions">
+      <button class="btn btn-success"
+        [disabled]="notebooksSelecionados.size !== solicitacaoAtual?.quantidade"
+        (click)="confirmarAprovacao()">
+        Confirmar Aprovação
+      </button>
+      <button class="btn btn-outline" (click)="aprovandoId = null">Cancelar</button>
+    </div>
+  </div>
+}
+
+@if (carregando) {
+  <p class="empty-text">Carregando...</p>
+} @else if (solicitacoes.length === 0) {
+  <div class="card empty-card">
+    <p>Nenhuma solicitação encontrada.</p>
+    @if (!isAdmin) {
+      <p style="margin-top: 0.5rem; font-size: 0.875rem;">
+        Vá até <a routerLink="/notebooks">Notebooks</a> para fazer uma solicitação.
+      </p>
+    }
+  </div>
+} @else {
+  <div class="card table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          @if (isAdmin) { <th>Usuário ID</th> }
+          <th>Solicitado em</th>
+          <th>Qtd</th>
+          <th>Aulas</th>
+          <th>Status</th>
+          <th>Previsão devolução</th>
+          @if (isAdmin) { <th>Ações</th> }
+        </tr>
+      </thead>
+      <tbody>
+        @for (s of solicitacoes; track s.id) {
+          <tr [class.atrasada]="s.estaAtrasada">
+            <td><strong>#{{ s.id }}</strong></td>
+            @if (isAdmin) { <td>{{ s.usuarioId }}</td> }
+            <td>{{ formatarData(s.dataHoraSolicitacao) }}</td>
+            <td>{{ s.quantidade }}</td>
+            <td>{{ s.aulasPrevistas }}</td>
+            <td>
+              <span class="badge" [class]="badgeSolicitacao(s.status)">
+                {{ labelSolicitacao(s.status) }}
+              </span>
+              @if (s.estaAtrasada) {
+                <span class="badge badge-red" style="margin-left: 4px">⚠ Atrasado</span>
+              }
+            </td>
+            <td>{{ formatarData(s.previsaoDevolucao) }}</td>
+
+            @if (isAdmin) {
+              <td class="actions">
+                @if (s.status === 'Pendente') {
+                  <button class="btn btn-sm btn-success" (click)="abrirAprovacao(s)">Aprovar</button>
+                  <button class="btn btn-sm btn-danger" (click)="mostrandoMotivoId = s.id">Recusar</button>
+                }
+                @if (s.status === 'EmUso') {
+                  <button class="btn btn-sm btn-outline" (click)="devolver(s.id)">Devolver</button>
+                }
+                @if (s.status === 'Recusada' && s.motivoRecusa) {
+                  <span class="motivo-recusa">{{ s.motivoRecusa }}</span>
+                }
+              </td>
+            }
+          </tr>
+
+          @if (isAdmin && mostrandoMotivoId === s.id) {
+            <tr class="recusa-row">
+              <td colspan="8">
+                <div class="recusa-form">
+                  <input type="text" [(ngModel)]="motivoRecusa[s.id]" placeholder="Motivo da recusa...">
+                  <button class="btn btn-sm btn-danger" (click)="recusar(s.id)">Confirmar recusa</button>
+                  <button class="btn btn-sm btn-outline" (click)="mostrandoMotivoId = null">Cancelar</button>
+                </div>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+}

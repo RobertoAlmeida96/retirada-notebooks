@@ -1,0 +1,157 @@
+<div class="page-header">
+  <h1>Notebooks</h1>
+  <div class="header-actions">
+    @if (!isAdmin && !mostrarFormSolicitacao) {
+      <button class="btn btn-primary" (click)="mostrarFormSolicitacao = true; sucessoSolicitacao = ''">
+        + Nova Solicitação
+      </button>
+    }
+  </div>
+</div>
+
+@if (sucessoSolicitacao) {
+  <div class="alert alert-success">{{ sucessoSolicitacao }}</div>
+}
+
+<!-- Formulário de solicitação (usuário) -->
+@if (!isAdmin && mostrarFormSolicitacao) {
+  <div class="card form-section">
+    <h3>Nova Solicitação de Retirada</h3>
+
+    @if (erroSolicitacao) {
+      <div class="alert alert-error">{{ erroSolicitacao }}</div>
+    }
+
+    <p class="form-hint">
+      Disponíveis agora: <strong>{{ totalDisponiveis }} notebook(s)</strong>
+    </p>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Quantidade de notebooks</label>
+        <input type="number" [(ngModel)]="quantidade" [ngModelOptions]="{standalone: true}" min="1" [max]="totalDisponiveis">
+      </div>
+      <div class="form-group">
+        <label>Número de aulas</label>
+        <input type="number" [(ngModel)]="aulasPrevistas" [ngModelOptions]="{standalone: true}" min="1" max="20">
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-primary" (click)="enviarSolicitacao()">Enviar Solicitação</button>
+      <button class="btn btn-outline" (click)="mostrarFormSolicitacao = false; erroSolicitacao = ''">Cancelar</button>
+    </div>
+  </div>
+}
+
+<!-- Formulário de edição de notebook (admin) -->
+@if (isAdmin && mostrarFormNotebook && editando) {
+  <div class="card form-section">
+    <h3>Editar Notebook Nº {{ editando.numero }}</h3>
+    <form [formGroup]="notebookForm" (ngSubmit)="salvarNotebook()" class="notebook-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Modelo</label>
+          <input type="text" formControlName="modelo">
+        </div>
+        <div class="form-group">
+          <label>Nº Série</label>
+          <input type="text" formControlName="numeroSerie">
+        </div>
+        <div class="form-group">
+          <label>Patrimônio</label>
+          <input type="text" formControlName="patrimonio">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Garantia</label>
+          <input type="text" formControlName="garantia">
+        </div>
+        <div class="form-group">
+          <label>Nota Fiscal</label>
+          <input type="text" formControlName="notaFiscal">
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select formControlName="status">
+            @for (op of statusOpcoes; track op.valor) {
+              <option [value]="op.valor">{{ op.label }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="flex: 1">
+          <label>Observações</label>
+          <input type="text" formControlName="observacoes">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="notebookForm.invalid">Salvar</button>
+        <button type="button" class="btn btn-outline" (click)="mostrarFormNotebook = false">Cancelar</button>
+      </div>
+    </form>
+  </div>
+}
+
+<!-- Listagem por carrinho -->
+@if (carregando) {
+  <p class="empty-text">Carregando...</p>
+} @else if (carrinhos.length === 0) {
+  <div class="card empty-card"><p>Nenhum notebook cadastrado.</p></div>
+} @else {
+  @for (carrinho of carrinhos; track carrinho.id) {
+    <div class="card carrinho-card">
+      <div class="carrinho-header">
+        <h3>{{ carrinho.nome }}</h3>
+        <div class="carrinho-stats">
+          <span class="badge badge-green">{{ contarDisponiveis(carrinho.notebooks) }} disponíveis</span>
+          <span class="badge badge-gray">{{ carrinho.notebooks.length }} total</span>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Nº</th>
+            <th>Modelo</th>
+            <th>Nº Série</th>
+            <th>Patrimônio</th>
+            <th>Garantia</th>
+            <th>NF</th>
+            <th>Status</th>
+            @if (isAdmin) {
+              <th>Obs.</th>
+              <th>Ações</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (n of carrinho.notebooks; track n.id) {
+            <tr [class.linha-problema]="n.status !== 'Disponivel' && n.status !== 'Emprestado' && n.status !== 'UsoAdministrativo'">
+              <td><strong>{{ n.numero }}</strong></td>
+              <td>{{ n.modelo }}</td>
+              <td class="mono">{{ n.numeroSerie || '—' }}</td>
+              <td class="mono">{{ n.patrimonio || '—' }}</td>
+              <td>{{ n.garantia || '—' }}</td>
+              <td>{{ n.notaFiscal || '—' }}</td>
+              <td>
+                <span class="badge" [class]="badgeNotebook(n.status)">
+                  {{ labelNotebook(n.status) }}
+                </span>
+              </td>
+              @if (isAdmin) {
+                <td class="obs-cell">{{ n.observacoes || '' }}</td>
+                <td class="actions">
+                  <button class="btn btn-sm btn-outline" (click)="abrirFormEditar(n)">Editar</button>
+                  <button class="btn btn-sm btn-danger" (click)="removerNotebook(n.id)">Remover</button>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+}

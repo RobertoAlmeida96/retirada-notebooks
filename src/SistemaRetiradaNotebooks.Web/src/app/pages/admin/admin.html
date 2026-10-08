@@ -1,0 +1,86 @@
+<div class="page-header">
+  <h1>Administração</h1>
+</div>
+
+@if (carregando) {
+  <p class="empty-text">Carregando...</p>
+} @else {
+
+  <!-- Usuários pendentes -->
+  <section class="section">
+    <h2>
+      Cadastros pendentes
+      @if (pendentes.length > 0) {
+        <span class="count-badge">{{ pendentes.length }}</span>
+      }
+    </h2>
+
+    @if (pendentes.length === 0) {
+      <div class="card empty-card">Nenhum cadastro aguardando aprovação.</div>
+    } @else {
+      <div class="card table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (u of pendentes; track u.id) {
+              <tr>
+                <td>{{ u.id }}</td>
+                <td><strong>{{ u.nome }}</strong></td>
+                <td>{{ u.email }}</td>
+                <td class="actions">
+                  <button class="btn btn-sm btn-success" (click)="aprovar(u.id)">Aprovar</button>
+                  <button class="btn btn-sm btn-danger" (click)="recusar(u.id)">Recusar</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <!-- Todos os usuários -->
+  <section class="section">
+    <h2>Todos os usuários</h2>
+
+    <div class="card table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Perfil</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of usuarios; track u.id) {
+            <tr>
+              <td>{{ u.id }}</td>
+              <td><strong>{{ u.nome }}</strong></td>
+              <td>{{ u.email }}</td>
+              <td>
+                <span class="badge" [class]="u.perfil === 'Admin' ? 'badge-blue' : 'badge-gray'">
+                  {{ u.perfil }}
+                </span>
+              </td>
+              <td>
+                <span class="badge" [class]="badgeStatus(u.status)">
+                  {{ labelStatus(u.status) }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+}

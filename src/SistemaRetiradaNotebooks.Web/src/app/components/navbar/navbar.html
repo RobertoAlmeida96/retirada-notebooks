@@ -1,0 +1,22 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    <span class="brand-icon">💻</span>
+    <span>Retirada de Notebooks</span>
+  </div>
+
+  <div class="navbar-links">
+    <a routerLink="/notebooks" routerLinkActive="active">Notebooks</a>
+    <a routerLink="/solicitacoes" routerLinkActive="active">Solicitações</a>
+    @if (isAdmin) {
+      <a routerLink="/admin" routerLinkActive="active">Administração</a>
+    }
+  </div>
+
+  <div class="navbar-user">
+    <span class="user-name">{{ usuario?.nome }}</span>
+    @if (isAdmin) {
+      <span class="badge-admin">Admin</span>
+    }
+    <button class="btn-sair" (click)="auth.logout()">Sair</button>
+  </div>
+</nav>
