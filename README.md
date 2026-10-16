@@ -42,7 +42,7 @@ Este sistema substitui a ficha por um **fluxo digital rastreável**, com autenti
 
 ---
 
-## 🔄 Como o sistema funciona
+## Como o sistema funciona
 
 Do cadastro à devolução, o caminho que um professor percorre:
 
@@ -74,7 +74,7 @@ As transições são **garantidas pelo domínio**: tentar devolver algo que não
 
 ---
 
-## 🛠️ Stack e decisões técnicas
+## Stack e decisões técnicas
 
 | Camada | Tecnologia | Por quê |
 |--------|-----------|---------|
@@ -86,7 +86,7 @@ As transições são **garantidas pelo domínio**: tentar devolver algo que não
 
 ---
 
-## 🧱 Arquitetura
+## Arquitetura
 
 ```
 ┌─────────────────────┐        HTTP + JWT        ┌──────────────────────────┐        ┌──────────────┐
@@ -99,7 +99,7 @@ As transições são **garantidas pelo domínio**: tentar devolver algo que não
 
 ---
 
-## 📁 Estrutura do projeto
+## Estrutura do projeto
 
 ```
 sistema-retirada-notebooks/
@@ -151,7 +151,7 @@ sistema-retirada-notebooks/
 
 ---
 
-## 🌐 Endpoints da API
+## Endpoints da API
 
 | Método | Rota | Acesso |
 |--------|------|--------|
@@ -169,7 +169,7 @@ sistema-retirada-notebooks/
 
 ---
 
-## 🚀 Como rodar localmente
+## Como rodar localmente
 
 ### Pré-requisitos
 - [.NET SDK 10](https://dotnet.microsoft.com/)
@@ -220,7 +220,7 @@ Use o e-mail e a senha de admin que você configurou em `Admin:Email` / `Admin:S
 | `AllowedOrigins` | Origens liberadas no CORS (separadas por vírgula) |
 | `PORT` | Porta de escuta (injetada por alguns provedores de cloud) |
 
-> 🔒 **Segurança:** este repositório usa apenas valores de exemplo/placeholder. Os dados de inventário do seeder são **fictícios**, e nenhum segredo real está versionado.
+> **Segurança:** este repositório usa apenas valores de exemplo/placeholder. Os dados de inventário do seeder são **fictícios**, e nenhum segredo real está versionado.
 
 ---
 
