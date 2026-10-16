@@ -76,13 +76,13 @@ As transições são **garantidas pelo domínio**: tentar devolver algo que não
 
 ## Stack e decisões técnicas
 
-| Camada | Tecnologia | Por quê |
-|--------|-----------|---------|
-| **Back-end** | C# / ASP.NET Core Web API (.NET 10) | API robusta, tipada e com ótimo ecossistema |
-| **ORM / Banco** | Entity Framework Core + PostgreSQL (Npgsql) | Migrations versionadas e banco relacional confiável |
-| **Autenticação** | JWT (JSON Web Tokens) | Stateless, ideal para separar front e back |
-| **Front-end** | Angular 22 (standalone components) | SPA organizada, com rotas, guards e injeção de dependência |
-| **Deploy** | Docker (back-end) + build estático (front-end) | Portável e fácil de publicar em qualquer cloud |
+| Camada | Tecnologia | 
+|--------|-----------|
+| **Back-end** | C# / ASP.NET Core Web API (.NET 10) | 
+| **ORM / Banco** | Entity Framework Core + PostgreSQL (Npgsql) |
+| **Autenticação** | JWT (JSON Web Tokens) |
+| **Front-end** | Angular 22 (standalone components) | 
+| **Deploy** | Docker (back-end) + build estático (front-end) | 
 
 ---
 
