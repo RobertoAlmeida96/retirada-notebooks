@@ -30,7 +30,7 @@ Este sistema substitui a ficha por um **fluxo digital rastreável**, com autenti
 
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 - 🔐 **Autenticação com JWT** e dois perfis: **Comum** (professores) e **Admin** (gestão)
 - 📝 **Cadastro com aprovação** — novos usuários entram como *pendentes* e só acessam depois que um admin aprova
@@ -84,12 +84,6 @@ As transições são **garantidas pelo domínio**: tentar devolver algo que não
 | **Front-end** | Angular 22 (standalone components) | SPA organizada, com rotas, guards e injeção de dependência |
 | **Deploy** | Docker (back-end) + build estático (front-end) | Portável e fácil de publicar em qualquer cloud |
 
-**Decisões que vale destacar:**
-
-- 🧠 A **regra de negócio vive no modelo de domínio** (`Solicitacao.cs`): os métodos `Aprovar()`, `Devolver()` e `Recusar()` protegem as transições de estado válidas.
-- ⏱️ A **previsão de devolução é calculada** a partir das aulas previstas, e o sistema marca automaticamente as solicitações atrasadas.
-- 🔒 **Segredos nunca ficam no código**: senha do admin, chave JWT e connection string vêm de configuração/variáveis de ambiente (localmente, via *User Secrets* do .NET).
-
 ---
 
 ## 🧱 Arquitetura
@@ -102,8 +96,6 @@ As transições são **garantidas pelo domínio**: tentar devolver algo que não
 └─────────────────────┘                          └──────────────────────────┘        └──────────────┘
     localhost:4200                                      localhost:5172
 ```
-
-O front-end nunca fala direto com o banco: toda comunicação passa pela API, que valida o token JWT, aplica as regras de permissão (Comum × Admin) e é a única a conhecer o PostgreSQL.
 
 ---
 
@@ -229,17 +221,6 @@ Use o e-mail e a senha de admin que você configurou em `Admin:Email` / `Admin:S
 | `PORT` | Porta de escuta (injetada por alguns provedores de cloud) |
 
 > 🔒 **Segurança:** este repositório usa apenas valores de exemplo/placeholder. Os dados de inventário do seeder são **fictícios**, e nenhum segredo real está versionado.
-
----
-
-## 📌 Status e próximos passos
-
-- [x] Back-end com autenticação, perfis e fluxo completo de solicitação
-- [x] Front-end Angular consumindo a API
-- [x] Deploy em produção (em uso por uma escola real)
-- [ ] Relatórios e histórico de empréstimos
-- [ ] Notificações por e-mail
-- [ ] Testes automatizados
 
 ---
 
